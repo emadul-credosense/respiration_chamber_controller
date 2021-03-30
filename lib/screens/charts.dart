@@ -39,7 +39,7 @@ class _ChartPageState extends State<ChartPage> {
 
     connectToDevice();
     writeData(
-        "Date, Time, Air Temperature(°C), Relative Humidity, Chamber Pressure(mBAR), Soil Moisture(%),Soil Temperature(°C)\r");
+        "Date, Time, Air Temperature(°C), Relative Humidity, Chamber Pressure(mBAR), Soil Moisture(%),Soil Temperature(°C),Chamber Status\r");
   }
 
   connectToDevice() async {
@@ -118,6 +118,7 @@ class _ChartPageState extends State<ChartPage> {
   String recentValue = " ";
   String saveData;
   double airTemp = -50.0;
+  String status = "";
 
   List<DataSet> temperature = [];
   List<DataSet> humidity = [];
@@ -187,7 +188,7 @@ class _ChartPageState extends State<ChartPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('CredoSense SRC-5'),
+        title: Text('CS-RC5'),
       ),
       body: WillPopScope(
         onWillPop: _onBackButtonPressed,
@@ -247,8 +248,10 @@ class _ChartPageState extends State<ChartPage> {
                           var currentStatus = text[0];
                           if (currentStatus == "1") {
                             switchOn = true;
+                            status = "Open";
                           } else if (currentStatus == "0") {
                             switchOn = false;
+                            status = "Closed";
                           }
 
                           final dateTime = DateTime.now();
@@ -293,7 +296,7 @@ class _ChartPageState extends State<ChartPage> {
                             dataText[4] = soilTemp.toStringAsFixed(2);
 
                             String data =
-                                "$date,$time,${dataText[0]},${dataText[1]},${dataText[2]},${dataText[3]},${dataText[4]}\r";
+                                "$date,$time,${dataText[0]},${dataText[1]},${dataText[2]},${dataText[3]},${dataText[4]},$status\r";
 
                             writeData(data);
                             String timeAndDate =
@@ -367,10 +370,6 @@ class _ChartPageState extends State<ChartPage> {
                                                 toggleSize: 35.0,
                                                 value: switchOn,
                                                 borderRadius: 20.0,
-                                                // paddingleft: 0.0,
-                                                // paddingright: 0.0,
-                                                // paddingtop: 0.0,
-                                                // paddingbottom: 0.0,
                                                 showOnOff: true,
                                                 onToggle: (value) {
                                                   setState(() {
@@ -549,7 +548,7 @@ class _ChartPageState extends State<ChartPage> {
                                       margin: EdgeInsets.fromLTRB(
                                           0.0, 8.0, 0.0, 8.0),
                                       child: Text(
-                                        ' Adjust data collection rate (sec)',
+                                        ' Data collection rate (${delay}sec)',
                                         style: TextStyle(fontSize: 15.0),
                                       ),
                                     ),
